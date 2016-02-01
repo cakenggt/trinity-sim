@@ -38,43 +38,41 @@ describe('Trinity', function(){
     })
   })
   describe('single sim', function(){
-    it('result end balance between normal values', function(){
-      var options = {
+    var options;
+    beforeEach(function(){
+      options = {
         startingValue: 1000000,
         startingYear: 1950,
-        durationYears: 30,
+        durationYears: 50,
         spendingModel: 40000
       }
+    })
+    it('result end balance between normal values', function(){
       var result = trinity.singleSim(options);
+      console.log(result.netWorths)
       expect(result.netWorths[result.netWorths.length-1]).to.be.above(1000000).and.below(1000000000);
     })
     it('failing result because of too high spending', function(){
-      var options = {
-        startingValue: 1000000,
-        startingYear: 1930,
-        durationYears: 70,
-        spendingModel: 80000
-      }
+      options.spendingModel = 100000;
       var result = trinity.singleSim(options);
       expect(result.netWorths[result.netWorths.length-1]).to.be.below(0);
     })
   })
   describe('full sim', function(){
-    it('high success rate', function(){
-      var options = {
+    var options;
+    beforeEach(function(){
+      options = {
         startingValue: 1000000,
         durationYears: 50,
         spendingModel: 20000
       }
+    })
+    it('high success rate', function(){
       var result = trinity.simulate(options);
       expect(result.successRate).to.be.above(0.8).and.below(1);
     })
     it('low succes rate', function(){
-      var options = {
-        startingValue: 1000000,
-        durationYears: 50,
-        spendingModel: 60000
-      }
+      options.spendingModel = 60000;
       var result = trinity.simulate(options);
       expect(result.successRate).to.be.above(0).and.below(0.5);
     })

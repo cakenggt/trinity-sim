@@ -89,7 +89,7 @@ function singleSim(options){
 }
 
 /**
-  Runs a single simulation line.
+  Runs the entire simulation with multiple simulation lines starting in different years.
 
   @param {Object} options - Options object which contains the options necessary for simulation.
   @param {Number} options.startingValue - Starting portfolio value. Required.
