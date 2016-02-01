@@ -18,6 +18,16 @@ describe('Trinity', function(){
       }
       expect(net).to.be.below(initial);
     })
+    it('inflation should be realistic', function(){
+      var inflation = 1;
+      for (var year = 1913; year < 1950; year++){
+        for (var month = 0; month < 12; month++){
+          var currentMonthData = trinity.data[''+year+'-'+month];
+          inflation /= (1+currentMonthData.inflation);
+        }
+      }
+      expect(inflation).to.be.below(0.5).and.above(0.3);
+    })
     it('growth should slowly increase money values', function(){
       var initial = 1000000;
       var net = initial;

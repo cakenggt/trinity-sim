@@ -79,7 +79,7 @@ function singleSim(options){
       }
       else{
         //flat spending
-        net -= spendingModel/12;
+        net -= (spendingModel/12)/inflation;
       }
       //add inflation
       inflation /= (1+currentMonthData.inflation);
