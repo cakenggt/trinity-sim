@@ -44,7 +44,8 @@ describe('Trinity', function(){
         startingValue: 1000000,
         startingYear: 1950,
         durationYears: 50,
-        spendingModel: 40000
+        fees: 0.0005,
+        spendingModel: 30000
       }
     })
     it('result end balance between normal values', function(){
@@ -63,17 +64,18 @@ describe('Trinity', function(){
       options = {
         startingValue: 1000000,
         durationYears: 50,
-        spendingModel: 20000
+        fees: 0.0005,
+        spendingModel: 30000
       }
     })
     it('high success rate', function(){
       var result = trinity.simulate(options);
-      expect(result.successRate).to.be.above(0.8).and.below(1);
+      expect(result.successRate).to.be.at.least(0.8).and.at.most(1);
     })
     it('low succes rate', function(){
       options.spendingModel = 60000;
       var result = trinity.simulate(options);
-      expect(result.successRate).to.be.above(0).and.below(0.5);
+      expect(result.successRate).to.be.at.least(0).and.below(0.5);
     })
   })
 })

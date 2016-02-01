@@ -24,6 +24,7 @@ exports.data = archive;
   @param {Number} options.startingYear - Starting year for the simulation.
   Must be between 1914 and 2015. Required.
   @param {Number} options.durationYears - Duration of the simulation in years. Required.
+  @param {Number} options.fees - Fees on investments per year. Required.
   @param {Array.<Number>|Number} options.spendingModel - Spending model for the simulation. Required.
   If it is a list of yearly spending, it must be an array at least as large as the durationYears property. Each index says how much money is spent per year.
   If it is a number, that will be the spending per year, adjusted with inflation.
@@ -52,6 +53,10 @@ function singleSim(options){
     throw "No spending model";
   }
   var spendingModel = options.spendingModel;
+  if (options.fees == undefined){
+    throw "No fees";
+  }
+  var fees = parseFloat(options.fees);
 
   var result = {};
   result.netWorths = [];
@@ -80,6 +85,8 @@ function singleSim(options){
       inflation /= (1+currentMonthData.inflation);
       //growth
       net = (net/lastMonthData.sp500)*currentMonthData.sp500;
+      //fees
+      net *= 1-(fees/12);
       if (month == 0){
         result.netWorths.push(net/inflation);
       }
@@ -94,6 +101,7 @@ function singleSim(options){
   @param {Object} options - Options object which contains the options necessary for simulation.
   @param {Number} options.startingValue - Starting portfolio value. Required.
   @param {Number} options.durationYears - Duration of the simulation in years. Required.
+  @param {Number} options.fees - Fees on investments per year. Required.
   @param {Array.<Number>|Number} options.spendingModel - Spending model for the simulation. Required.
   If it is a list of yearly spending, it must be an array at least as large as the durationYears property. Each index says how much money is spent per year.
   If it is a number, that will be the spending per year, adjusted with inflation.
@@ -108,6 +116,7 @@ function simulate(options){
       startingValue: options.startingValue,
       startingYear: year,
       durationYears: options.durationYears,
+      fees: options.fees,
       spendingModel: options.spendingModel
     };
     var result = singleSim(singleOptions);
