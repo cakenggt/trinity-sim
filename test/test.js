@@ -20,13 +20,13 @@ describe('Trinity', function(){
     })
     it('inflation should be realistic', function(){
       var inflation = 1;
-      for (var year = 1913; year < 1950; year++){
+      for (var year = 1940; year < 2016; year++){
         for (var month = 0; month < 12; month++){
           var currentMonthData = trinity.data[''+year+'-'+month];
           inflation /= (1+currentMonthData.inflation);
         }
       }
-      expect(inflation).to.be.below(0.5).and.above(0.3);
+      expect(inflation).to.be.below(0.07).and.above(0.05);
     })
     it('growth should slowly increase money values', function(){
       var initial = 1000000;
@@ -52,10 +52,10 @@ describe('Trinity', function(){
     beforeEach(function(){
       options = {
         startingValue: 1000000,
-        startingYear: 1950,
-        durationYears: 50,
+        startingYear: 1980,
+        durationYears: 30,
         fees: 0.0005,
-        spendingModel: 30000
+        spendingModel: 40000
       }
     })
     it('result end balance between normal values', function(){
@@ -85,7 +85,7 @@ describe('Trinity', function(){
     it('low succes rate', function(){
       options.spendingModel = 60000;
       var result = trinity.simulate(options);
-      expect(result.successRate).to.be.at.least(0).and.below(0.5);
+      expect(result.successRate).to.be.at.least(0).and.below(0.7);
     })
   })
 })
