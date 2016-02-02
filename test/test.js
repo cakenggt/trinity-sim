@@ -1,18 +1,19 @@
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 var trinity = require('../index.js');
+var archive = require('../archive.js').data;
 
 describe('Trinity', function(){
   describe('data', function(){
     it('sp500 data should exist', function(){
-      expect(trinity.data['1913-0'].sp500).to.equal(9.3);
+      expect(archive['1913-0'].sp500).to.equal(9.3);
     })
     it('inflation should decrease money values', function(){
       var initial = 1000000;
       var net = initial;
       for (var year = 1913; year < 1950; year++){
         for (var month = 0; month < 12; month++){
-          var currentMonthData = trinity.data[''+year+'-'+month];
+          var currentMonthData = archive[''+year+'-'+month];
           net /= (1+currentMonthData.inflation)
         }
       }
@@ -22,7 +23,7 @@ describe('Trinity', function(){
       var inflation = 1;
       for (var year = 1940; year < 2016; year++){
         for (var month = 0; month < 12; month++){
-          var currentMonthData = trinity.data[''+year+'-'+month];
+          var currentMonthData = archive[''+year+'-'+month];
           inflation /= (1+currentMonthData.inflation);
         }
       }
@@ -33,13 +34,13 @@ describe('Trinity', function(){
       var net = initial;
       for (var year = 1914; year < 1950; year++){
         for (var month = 0; month < 12; month++){
-          var currentMonthData = trinity.data[''+year+'-'+month];
+          var currentMonthData = archive[''+year+'-'+month];
           var lastMonthData;
           if (month == 0){
-            lastMonthData = trinity.data[''+(year-1)+'-'+11];
+            lastMonthData = archive[''+(year-1)+'-'+11];
           }
           else{
-            lastMonthData = trinity.data[''+(year)+'-'+(month-1)];
+            lastMonthData = archive[''+(year)+'-'+(month-1)];
           }
           net = (net/lastMonthData.sp500)*currentMonthData.sp500;
         }
