@@ -85,7 +85,7 @@ describe('Trinity', function(){
     it('low succes rate', function(){
       options.spendingModel = 60000;
       var result = trinity.simulate(options);
-      expect(result.successRate).to.be.at.least(0).and.below(0.7);
+      expect(result.successRate).to.be.at.least(0.5).and.below(0.7);
     })
   })
 })
