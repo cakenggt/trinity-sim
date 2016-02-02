@@ -81,12 +81,19 @@ describe('Trinity', function(){
     })
     it('high success rate', function(){
       var result = trinity.simulate(options);
-      expect(result.successRate).to.be.at.least(0.8).and.at.most(1);
+      expect(result.successRate).to.be.within(0.8, 1);
     })
     it('low succes rate', function(){
       options.spendingModel = 60000;
       var result = trinity.simulate(options);
-      expect(result.successRate).to.be.at.least(0.5).and.below(0.7);
+      expect(result.successRate).to.be.within(0.5, 0.7);
+    })
+    it('different success rates', function(){
+      options.spendingModel = 40000;
+      var resultHigh = trinity.simulate(options);
+      options.spendingModel = 50000;
+      var resultLow = trinity.simulate(options);
+      expect(resultHigh.successRate).to.be.above(resultLow.successRate);
     })
   })
 })
