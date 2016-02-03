@@ -27,5 +27,6 @@
   "bugs": {
     "url": "https://github.com/cakenggt/trinity-sim/issues"
   },
+  "tonicExampleFilename": "example/example.js",
   "homepage": "https://github.com/cakenggt/trinity-sim#readme"
 }
