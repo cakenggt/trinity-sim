@@ -55,6 +55,10 @@ describe('Trinity', function(){
         startingValue: 1000000,
         startingYear: 1980,
         durationYears: 30,
+        allocation: {
+          equities: 1,
+          bonds: 0
+        },
         fees: 0.0005,
         spendingModel: 40000
       }
@@ -75,6 +79,10 @@ describe('Trinity', function(){
       options = {
         startingValue: 1000000,
         durationYears: 50,
+        allocation: {
+          equities: 1,
+          bonds: 0
+        },
         fees: 0.0005,
         spendingModel: 30000
       }
@@ -88,10 +96,18 @@ describe('Trinity', function(){
       var result = trinity.simulate(options);
       expect(result.successRate).to.be.within(0.5, 0.7);
     })
-    it('different success rates', function(){
+    it('different success rates due to spending', function(){
       options.spendingModel = 40000;
       var resultHigh = trinity.simulate(options);
       options.spendingModel = 50000;
+      var resultLow = trinity.simulate(options);
+      expect(resultHigh.successRate).to.be.above(resultLow.successRate);
+    })
+    it('different success rates due to allocation', function(){
+      options.spendingModel = 40000;
+      var resultHigh = trinity.simulate(options);
+      options.allocation.equities = 0.5;
+      options.allocation.bonds = 0.5;
       var resultLow = trinity.simulate(options);
       expect(resultHigh.successRate).to.be.above(resultLow.successRate);
     })

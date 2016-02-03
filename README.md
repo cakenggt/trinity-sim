@@ -20,6 +20,12 @@ Runs a single simulation line.
 
 **options.durationYears**: `Number`, Duration of the simulation in years. Required.
 
+**options.allocation**: `Object`, Object which contains the allocations for the starting value. All values must add up to 1.
+
+**options.allocation.equities**: `Number`, Percent of equities.
+
+**options.allocation.bonds**: `Number`, Percent of bonds.
+
 **options.fees**: `Number`, Fees on investments per year. Required.
 
 **options.spendingModel**: `Array.<Number> | Number`, Spending model for the simulation. Required.
@@ -41,6 +47,12 @@ Runs the entire simulation with multiple simulation lines starting in different 
 **options.startingValue**: `Number`, Starting portfolio value. Required.
 
 **options.durationYears**: `Number`, Duration of the simulation in years. Required.
+
+**options.allocation**: `Object`, Object which contains the allocations for the starting value. All values must add up to 1.
+
+**options.allocation.equities**: `Number`, Percent of equities.
+
+**options.allocation.bonds**: `Number`, Percent of bonds.
 
 **options.fees**: `Number`, Fees on investments per year. Required.
 
