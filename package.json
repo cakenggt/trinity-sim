@@ -1,6 +1,6 @@
 {
   "name": "trinity-sim",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Simulator for the famous Trinity study",
   "main": "index.js",
   "directories": {
@@ -19,5 +19,13 @@
     "fire"
   ],
   "author": "Alec Lownes",
-  "license": "ISC"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cakenggt/trinity-sim.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cakenggt/trinity-sim/issues"
+  },
+  "homepage": "https://github.com/cakenggt/trinity-sim#readme"
 }
