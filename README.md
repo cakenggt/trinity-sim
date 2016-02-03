@@ -67,3 +67,5 @@ Specifically, data can be found here:
   dividend: http://www.multpl.com/s-p-500-dividend-yield/table?f=m *(These are divided by 12)*
 
   inflation: http://inflationdata.com/Inflation/Inflation_Rate/Monthly_Inflation.aspx
+
+  treasuryrate: http://www.multpl.com/10-year-treasury-rate/table/by-month *(These are divided by 12)*
