@@ -12,7 +12,7 @@
 
 //Months are 0 indexed
 //inflation is not in percents
-var archive = require('./archive.js').data
+var archive = require('./archive.js').data;
 
 /**
   Runs a single simulation line.
@@ -32,40 +32,40 @@ var archive = require('./archive.js').data
   @returns {SingleSimReturn} result - Result of the sim.
 */
 function singleSim(options){
-  if (options.startingValue == undefined){
+  if (options.startingValue === undefined){
     throw "No starting value";
   }
   var startingValue = parseFloat(options.startingValue);
-  if (options.startingYear == undefined){
+  if (options.startingYear === undefined){
     throw "No starting year";
   }
   var startingYear = parseInt(options.startingYear);
   if (startingYear < 1914 || startingYear > 2015) {
     throw "Starting year not in correct range";
   }
-  if (options.durationYears == undefined){
+  if (options.durationYears === undefined){
     throw "No duration";
   }
   var durationYears = parseInt(options.durationYears);
   if (durationYears + startingYear > 2015) {
     throw "Duration too long for starting year";
   }
-  if (options.spendingModel == undefined){
+  if (options.spendingModel === undefined){
     throw "No spending model";
   }
   var spendingModel = options.spendingModel;
-  if (options.fees == undefined){
+  if (options.fees === undefined){
     throw "No fees";
   }
   var fees = parseFloat(options.fees);
-  if (options.allocation == undefined){
+  if (options.allocation === undefined){
     throw "No allocation";
   }
   var allocation = options.allocation;
-  if (allocation.equities == undefined){
+  if (allocation.equities === undefined){
     throw "No equities";
   }
-  if (allocation.bonds == undefined){
+  if (allocation.bonds === undefined){
     throw "No bonds";
   }
   if (allocation.bonds + allocation.equities != 1){
@@ -101,7 +101,7 @@ function singleSim(options){
       //subtract inflation adjusted spending from each asset type
       shares -= (spending*allocation.equities)/currentMonthData.sp500;
       bonds -= spending*allocation.bonds;
-      if (month == 0){
+      if (month === 0){
         var net = (shares*currentMonthData.sp500*inflation)+(bonds*inflation);
         result.netWorths.push(net);
       }
@@ -138,8 +138,8 @@ function simulate(options){
       fees: options.fees,
       spendingModel: options.spendingModel
     };
-    var result = singleSim(singleOptions);
-    if (result.netWorths[result.netWorths.length-1] > 1){
+    var singleResult = singleSim(singleOptions);
+    if (singleResult.netWorths[singleResult.netWorths.length-1] > 1){
       totalSuccess++;
     }
     totalRuns++;
@@ -149,4 +149,4 @@ function simulate(options){
 }
 
 exports.singleSim = singleSim;
-exports.simulate = simulate
+exports.simulate = simulate;
