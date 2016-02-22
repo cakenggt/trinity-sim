@@ -61,8 +61,9 @@ Runs the entire simulation with multiple simulation lines starting in different 
   If it is a number, that will be the spending per year, adjusted with inflation.
 
 **Returns**: `SimulationReturn`, result - Result of the sim.
-  **result.successRate**: `Number`, Number between 0 and 1 representing the proportion of cycles
-  which succeeded.
+  **result.successRate**: `Number`, Number between 0 and 1 representing the proportion of cycles which succeeded.
+  **result.data**: `Array.<Array.<Number>>`, Array of arrays, each one containing
+  the net worths from a single simulation of one year.
 
 
 
