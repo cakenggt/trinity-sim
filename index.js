@@ -8,6 +8,7 @@
   @typedef SimulationReturn
   @type Object
   @property {Number} successRate - Success rate.
+  @property {Array.<Array.<Number>>} data - Array of array of net worths for each single simulation.
 */
 
 //Months are 0 indexed
@@ -127,6 +128,7 @@ function singleSim(options){
 */
 function simulate(options){
   var result = {};
+  result.data = [];
   var totalSuccess = 0;
   var totalRuns = 0;
   for (var year = 1914; year < 2016-options.durationYears; year++){
@@ -143,6 +145,7 @@ function simulate(options){
       totalSuccess++;
     }
     totalRuns++;
+    result.data.push(singleResult.netWorths);
   }
   result.successRate = totalSuccess/totalRuns;
   return result;
