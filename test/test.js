@@ -6,44 +6,19 @@ var archive = require('../archive.js').data;
 describe('Trinity', function(){
   describe('data', function(){
     it('sp500 data should exist', function(){
-      expect(archive['1913-0'].sp500).to.equal(9.3);
+      expect(archive['1913'].sp500).to.equal(9.3);
     });
     it('inflation should decrease money values', function(){
       var initial = 1000000;
-      var net = initial;
-      for (var year = 1913; year < 1950; year++){
-        for (var month = 0; month < 12; month++){
-          var currentMonthData = archive[''+year+'-'+month];
-          net /= (1+currentMonthData.inflation);
-        }
-      }
-      expect(net).to.be.below(initial);
-    });
-    it('inflation should be realistic', function(){
-      var inflation = 1;
-      for (var year = 1940; year < 2016; year++){
-        for (var month = 0; month < 12; month++){
-          var currentMonthData = archive[''+year+'-'+month];
-          inflation /= (1+currentMonthData.inflation);
-        }
-      }
-      expect(inflation).to.be.below(0.07).and.above(0.05);
+      expect(initial/archive['1950'].cpi).to.be.below(initial/archive['1913'].cpi);
     });
     it('growth should slowly increase money values', function(){
       var initial = 1000000;
       var net = initial;
       for (var year = 1914; year < 1950; year++){
-        for (var month = 0; month < 12; month++){
-          var currentMonthData = archive[''+year+'-'+month];
-          var lastMonthData;
-          if (month === 0){
-            lastMonthData = archive[''+(year-1)+'-'+11];
-          }
-          else{
-            lastMonthData = archive[''+(year)+'-'+(month-1)];
-          }
-          net = (net/lastMonthData.sp500)*currentMonthData.sp500;
-        }
+        var currentYearData = archive[''+year];
+        var lastYearData = archive[''+(year-1)];
+        net = (net/lastYearData.sp500)*currentYearData.sp500;
       }
       expect(net).to.be.below(100*initial);
     });

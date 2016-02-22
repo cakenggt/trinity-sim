@@ -41,14 +41,14 @@ function singleSim(options){
     throw "No starting year";
   }
   var startingYear = parseInt(options.startingYear);
-  if (startingYear < 1914 || startingYear > 2015) {
+  if (startingYear < 1871 || startingYear > 2016) {
     throw "Starting year not in correct range";
   }
   if (options.durationYears === undefined){
     throw "No duration";
   }
   var durationYears = parseInt(options.durationYears);
-  if (durationYears + startingYear > 2015) {
+  if (durationYears + startingYear > 2016) {
     throw "Duration too long for starting year";
   }
   if (options.spendingModel === undefined){
@@ -75,38 +75,38 @@ function singleSim(options){
 
   var result = {};
   result.netWorths = [];
-  var inflation = 1;
-  var shares = (startingValue*allocation.equities)/archive[''+startingYear+'-'+0].sp500;
-  var bonds = startingValue*allocation.bonds;
+  var startingCPI = archive['2016'].cpi;
+  //starting net worth is in the starting year's dollars
+  var startingNetWorth = (startingValue/startingCPI)*archive[''+startingYear].cpi;
+  //actual number of shares that the starting value in the
+  //starting year would have bought, inflation adjusted
+  var shares = (startingNetWorth*allocation.equities)/archive[''+startingYear].sp500;
+  //bonds are in the starting year's dollars
+  var bonds = startingNetWorth*allocation.bonds;
   for (var year = 0; year < durationYears; year++){
-    for (var month = 0; month < 12; month++){
-      var currentMonthData = archive[''+(year+startingYear)+'-'+month];
-      //dividend
-      shares *= (1+currentMonthData.dividend);
-      //bonds
-      bonds *= (1+currentMonthData.treasuryrate);
-      //add inflation
-      inflation /= (1+currentMonthData.inflation);
-      //fees
-      shares *= 1-(fees/12);
-      //subtract spending
-      var spending;
-      if (typeof(spendingModel) == 'object'){
-        //spending array
-        spending = (spendingModel[year]/12)/inflation;
-      }
-      else{
-        //flat spending
-        spending = (spendingModel/12)/inflation;
-      }
-      //subtract inflation adjusted spending from each asset type
-      shares -= (spending*allocation.equities)/currentMonthData.sp500;
-      bonds -= spending*allocation.bonds;
-      if (month === 0){
-        var net = (shares*currentMonthData.sp500*inflation)+(bonds*inflation);
-        result.netWorths.push(net);
-      }
+    var currentYearData = archive[''+(year+startingYear)];
+    //dividend
+    shares *= (1+currentYearData.dividend);
+    //bonds
+    bonds *= (1+currentYearData.treasuryrate);
+    //fees
+    shares *= 1-fees;
+    //subtract spending
+    //spending is in inflation adjusted dollars
+    var spending;
+    if (typeof(spendingModel) == 'object'){
+      //spending array
+      spending = (spendingModel[year]/startingCPI)*currentYearData.cpi;
     }
+    else{
+      //flat spending
+      spending = (spendingModel/startingCPI)*currentYearData.cpi;
+    }
+    //subtract inflation adjusted spending from each asset type
+    shares -= (spending*allocation.equities)/currentYearData.sp500;
+    bonds -= spending*allocation.bonds;
+    var net = (shares*currentYearData.sp500)+(bonds);
+    result.netWorths.push(net);
   }
   return result;
 }
@@ -131,7 +131,7 @@ function simulate(options){
   result.data = [];
   var totalSuccess = 0;
   var totalRuns = 0;
-  for (var year = 1914; year < 2016-options.durationYears; year++){
+  for (var year = 1871; year < 2016-options.durationYears; year++){
     var singleOptions = {
       startingValue: options.startingValue,
       startingYear: year,
