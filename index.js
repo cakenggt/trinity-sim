@@ -75,9 +75,8 @@ function singleSim(options){
 
   var result = {};
   result.netWorths = [];
-  var startingCPI = archive['2016'].cpi;
   //starting net worth is in the starting year's dollars
-  var startingNetWorth = (startingValue/startingCPI)*archive[''+startingYear].cpi;
+  var startingNetWorth = inflationAdjuster(startingValue, 2016, startingYear);
   //actual number of shares that the starting value in the
   //starting year would have bought, inflation adjusted
   var shares = (startingNetWorth*allocation.equities)/archive[''+startingYear].sp500;
@@ -86,29 +85,76 @@ function singleSim(options){
   for (var year = 0; year < durationYears; year++){
     var currentYearData = archive[''+(year+startingYear)];
     //dividend
-    shares *= (1+currentYearData.dividend);
+    shares *= 1+currentYearData.dividend;
     //bonds
-    bonds *= (1+currentYearData.treasuryrate);
+    //annual percentage yield calculation
+    var apy = Math.pow(1+(currentYearData.treasuryrate/2), 2)-1;
+    bonds *= 1+apy;
     //fees
     shares *= 1-fees;
+    bonds *= 1-fees;
     //subtract spending
     //spending is in inflation adjusted dollars
     var spending;
     if (typeof(spendingModel) == 'object'){
       //spending array
-      spending = (spendingModel[year]/startingCPI)*currentYearData.cpi;
+      spending = inflationAdjuster(spendingModel[year], 2016, year+startingYear);
     }
     else{
       //flat spending
-      spending = (spendingModel/startingCPI)*currentYearData.cpi;
+      spending = inflationAdjuster(spendingModel, 2016, year+startingYear);
     }
-    //subtract inflation adjusted spending from each asset type
-    shares -= (spending*allocation.equities)/currentYearData.sp500;
-    bonds -= spending*allocation.bonds;
+    //subtract inflation adjusted spending from each asset type equally
+    var valueOfShares = shares*currentYearData.sp500;
+    var spendingRatioForEquities = valueOfShares/(bonds+valueOfShares);
+    shares -= (spending*spendingRatioForEquities)/currentYearData.sp500;
+    bonds -= spending*(1-spendingRatioForEquities);
+    //net is in sim year dollars
     var net = (shares*currentYearData.sp500)+(bonds);
-    result.netWorths.push(net);
+    //adjusted net is in current year dollars
+    var adjustedNet = worthAdjuster(net, year+startingYear, 2016);
+    result.netWorths.push(adjustedNet);
   }
   return result;
+}
+
+/**
+  Adjusts an amount of money with inflation to show it's worth at an ending year.
+  This will almost always return a lesser amount if the end year is greater.
+
+  @param {Number} amount - Amount of money.
+  @param {Number} startYear - Year the amount of money is in currently.
+  @param {Number} endYear - Year you want to see the worth of the money in.
+  @returns {Number} Worth of the money in the end year, in starting year dollars.
+*/
+function worthAdjuster(amount, startYear, endYear){
+  if (!archive[''+startYear]){
+    throw "Start year not in archive";
+  }
+  if (!archive[''+endYear]){
+    throw "End year not in archive";
+  }
+  return (amount/archive[endYear].cpi)*archive[startYear].cpi;
+}
+
+/**
+  Adjusts an amount of money with inflation to show it's amount at an ending year.
+  This will almost always return a greater amount if the end year is greater.
+
+  @param {Number} amount - Amount of money.
+  @param {Number} startYear - Year the amount of money is in currently.
+  @param {Number} endYear - Year you want to see the inflated amount of the money in.
+  @returns {Number} Number of dollars to equal the worth of the money in the
+  start year, in end year dollars.
+*/
+function inflationAdjuster(amount, startYear, endYear){
+  if (!archive[''+startYear]){
+    throw "Start year not in archive";
+  }
+  if (!archive[''+endYear]){
+    throw "End year not in archive";
+  }
+  return (amount/archive[startYear].cpi)*archive[endYear].cpi;
 }
 
 /**

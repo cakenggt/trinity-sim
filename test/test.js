@@ -2,6 +2,7 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 var trinity = require('../index.js');
 var archive = require('../archive.js').data;
+var testData = require('./test_data.js').data;
 
 describe('Trinity', function(){
   describe('data', function(){
@@ -87,4 +88,23 @@ describe('Trinity', function(){
       expect(resultHigh.successRate).to.be.above(resultLow.successRate);
     });
   });
+  describe('comparison runs', function(){
+    for (var x = 0; x < testData.length; x++){
+      var data = testData[x];
+      var result = trinity.simulate(data.options);
+      //margin is either the difference between fireCalc and cFireSim,
+      //or 10%, whichever is higher
+      var margin = Math.max(Math.abs(data.fireCalc-data.cFireSim), 0.1);
+      it('within ' + Math.round(margin*100) + '% using ' + data.description,
+        createComparisonTest(result, data, margin));
+    }
+  });
 });
+
+function createComparisonTest(result, data, margin){
+  return function(){
+    var lower = Math.min(data.cFireSim-margin, data.fireCalc-margin);
+    var upper = Math.max(data.cFireSim+margin, data.fireCalc+margin);
+    expect(result.successRate).to.be.within(lower, upper);
+  };
+}
