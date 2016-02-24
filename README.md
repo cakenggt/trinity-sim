@@ -1,4 +1,5 @@
 # trinity-sim
+[![Build Status](https://travis-ci.org/cakenggt/trinity-sim.svg?branch=master)](https://travis-ci.org/cakenggt/trinity-sim)
 
 trinity-sim lets you run your own permutations on the classic [Trinity Study](https://en.wikipedia.org/wiki/Trinity_study).
 
