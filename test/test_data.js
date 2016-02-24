@@ -85,8 +85,8 @@ exports.data = [
       fees: 0.0005,
       spendingModel: 60000
     },
-    cFireSim: 0.1579,
-    fireCalc: 0.158,
+    cFireSim: 0.2316,
+    fireCalc: 0.2,
     description: 'Half equities, medium-high spending'
   },
   {

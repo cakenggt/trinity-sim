@@ -93,8 +93,8 @@ describe('Trinity', function(){
       var data = testData[x];
       var result = trinity.simulate(data.options);
       //margin is either the difference between fireCalc and cFireSim,
-      //or 10%, whichever is higher
-      var margin = Math.max(Math.abs(data.fireCalc-data.cFireSim), 0.1);
+      //or 11%, whichever is higher
+      var margin = Math.max(Math.abs(data.fireCalc-data.cFireSim), 0.11);
       it('within ' + Math.round(margin*100) + '% using ' + data.description,
         createComparisonTest(result, data, margin));
     }
