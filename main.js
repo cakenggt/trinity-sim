@@ -27,8 +27,10 @@ $(function(){
     var result = trinity.simulate(options);
     for (var y = 0; y < result.data.length; y++){
       var runData = result.data[y];
-      var dataset = {};
-      dataset.label = ''+y;
+      var dataset = {
+        label: ''+y,
+        data: []
+      };
       for (var z = 0; z < runData.length; z++){
         var yearData = runData[z];
         dataset.data.push(yearData.adjustedNet);
@@ -36,7 +38,9 @@ $(function(){
       data.datasets.push(dataset);
     }
     var chartOptions = {
-      datasetFill: false
+      datasetFill: false,
+      pointDot: false,
+      showTooltips: false
     };
     var myLineChart = new Chart(ctx).Line(data, chartOptions);
   });
