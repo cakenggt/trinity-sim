@@ -218,7 +218,7 @@ function simulate(options){
       totalSuccess++;
     }
     totalRuns++;
-    result.data.push(singleResult.netWorths);
+    result.data.push(singleResult.data);
   }
   result.successRate = totalSuccess/totalRuns;
   return result;
