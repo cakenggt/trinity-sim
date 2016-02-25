@@ -1099,7 +1099,7 @@ function simulate(options){
       totalSuccess++;
     }
     totalRuns++;
-    result.data.push(singleResult.netWorths);
+    result.data.push(singleResult.data);
   }
   result.successRate = totalSuccess/totalRuns;
   return result;
@@ -1111,9 +1111,7 @@ exports.simulate = simulate;
 },{"./archive.js":1}],3:[function(require,module,exports){
 var trinity = require('./index.js');
 
-var ctx;
 $(function(){
-  ctx = $('#chart').get(0).getContext('2d');
   $('#run').on('click', function(){
     var durationYears = 50;
     var labels = [];
@@ -1131,27 +1129,69 @@ $(function(){
       spendingModel: 40000,
       rebalance: false
     };
-    var data = {
+    var netData = {
+      labels: labels,
+      datasets: []
+    };
+    var equityData = {
+      labels: labels,
+      datasets: []
+    };
+    var bondData = {
       labels: labels,
       datasets: []
     };
     var result = trinity.simulate(options);
-    console.log(result);
     for (var y = 0; y < result.data.length; y++){
       var runData = result.data[y];
-      var dataset = {};
-      dataset.label = ''+y;
+      var color = randomColor();
+      var netDataset = {
+        label: ''+y,
+        data: [],
+        strokeColor: color
+      };
+      var equityDataset = {
+        label: ''+y,
+        data: [],
+        strokeColor: color
+      };
+      var bondDataset = {
+        label: ''+y,
+        data: [],
+        strokeColor: color
+      };
       for (var z = 0; z < runData.length; z++){
         var yearData = runData[z];
-        dataset.data.push(yearData.adjustedNet);
+        netDataset.data.push(yearData.adjustedNet);
+        equityDataset.data.push(yearData.adjustedSharesBalance);
+        bondDataset.data.push(yearData.adjustedBondsBalance);
       }
-      data.datasets.push(dataset);
+      netData.datasets.push(netDataset);
+      equityData.datasets.push(equityDataset);
+      bondData.datasets.push(bondDataset);
     }
     var chartOptions = {
-      datasetFill: false
+      datasetFill: false,
+      pointDot: false,
+      showTooltips: false
     };
-    var myLineChart = new Chart(ctx).Line(data, chartOptions);
+    new Chart(getContextOfId('netChart')).Line(netData, chartOptions);
+    new Chart(getContextOfId('equityChart')).Line(equityData, chartOptions);
+    new Chart(getContextOfId('bondChart')).Line(bondData, chartOptions);
+    $('#data').show();
   });
 });
+
+function randomColor(){
+  //return random color
+  return "rgba("+Math.floor(Math.random()*255)+
+    ","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+
+    ",1)";
+}
+
+function getContextOfId(id){
+  //gets the 2d context of the canvas by this id
+  return $('#'+id).get(0).getContext('2d');
+}
 
 },{"./index.js":2}]},{},[3]);
