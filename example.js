@@ -8,7 +8,8 @@ var options = {
   allocation: {
     equities: 1,
     bonds: 0
-  }
+  },
+  rebalance: false
 };
 
 var result = trinitysim.simulate(options);
