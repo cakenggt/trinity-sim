@@ -87,6 +87,15 @@ describe('Trinity', function(){
       var resultLow = trinity.simulate(options);
       expect(resultHigh.successRate).to.be.above(resultLow.successRate);
     });
+    it('different success rates due to rebalancing', function(){
+      options.spendingModel = 40000;
+      options.allocation.equities = 0.5;
+      options.allocation.bonds = 0.5;
+      var resultHigh = trinity.simulate(options);
+      options.rebalance = true;
+      var resultLow = trinity.simulate(options);
+      expect(resultHigh.successRate).to.not.equal(resultLow.successRate);
+    });
   });
   describe('comparison runs', function(){
     for (var x = 0; x < testData.length; x++){
