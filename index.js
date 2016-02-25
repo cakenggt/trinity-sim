@@ -24,12 +24,13 @@ var archive = require('./archive.js').data;
   Must be between 1914 and 2015. Required.
   @param {Number} options.durationYears - Duration of the simulation in years. Required.
   @param {Object} options.allocation - Object which contains the allocations for the starting value. All values must add up to 1.
-  @param {Number} options.allocation.equities - Percent of equities.
-  @param {Number} options.allocation.bonds - Percent of bonds.
+  @param {Number} options.allocation.equities - Ratio of equities.
+  @param {Number} options.allocation.bonds - Ratio of bonds. Will default to 1-equities.
   @param {Number} options.fees - Fees on investments per year. Required.
   @param {Array.<Number>|Number} options.spendingModel - Spending model for the simulation. Required.
   If it is a list of yearly spending, it must be an array at least as large as the durationYears property. Each index says how much money is spent per year.
   If it is a number, that will be the spending per year, adjusted with inflation.
+  @param {Boolean} options.rebalance - Whether to rebalance allocation annually. Defaults to false.
   @returns {SingleSimReturn} result - Result of the sim.
 */
 function singleSim(options){
@@ -67,10 +68,17 @@ function singleSim(options){
     throw "No equities";
   }
   if (allocation.bonds === undefined){
-    throw "No bonds";
+    allocation.bonds = 1-allocation.equities;
   }
   if (allocation.bonds + allocation.equities != 1){
     throw "Allocations do not add up to 1";
+  }
+  var rebalance;
+  if (options.rebalance === undefined){
+    rebalance = false;
+  }
+  else{
+    rebalance = options.rebalance;
   }
 
   var result = {};
@@ -111,6 +119,15 @@ function singleSim(options){
     bonds -= spending*(1-spendingRatioForEquities);
     //net is in sim year dollars
     var net = (shares*currentYearData.sp500)+(bonds);
+    //rebalance
+    if (rebalance){
+      if (spendingRatioForEquities != allocation.equities){
+        //it is not balanced according to allocation
+        var newValueOfShares = allocation.equities * net;
+        shares = newValueOfShares/currentYearData.sp500;
+        bonds = allocation.bonds * net;
+      }
+    }
     //adjusted net is in current year dollars
     var adjustedNet = worthAdjuster(net, year+startingYear, 2016);
     result.netWorths.push(adjustedNet);
@@ -164,12 +181,13 @@ function inflationAdjuster(amount, startYear, endYear){
   @param {Number} options.startingValue - Starting portfolio value. Required.
   @param {Number} options.durationYears - Duration of the simulation in years. Required.
   @param {Object} options.allocation - Object which contains the allocations for the starting value. All values must add up to 1.
-  @param {Number} options.allocation.equities - Percent of equities.
-  @param {Number} options.allocation.bonds - Percent of bonds.
+  @param {Number} options.allocation.equities - Ratio of equities.
+  @param {Number} options.allocation.bonds - Ratio of bonds. Will default to 1-equities.
   @param {Number} options.fees - Fees on investments per year. Required.
   @param {Array.<Number>|Number} options.spendingModel - Spending model for the simulation. Required.
   If it is a list of yearly spending, it must be an array at least as large as the durationYears property. Each index says how much money is spent per year.
   If it is a number, that will be the spending per year, adjusted with inflation.
+  @param {Boolean} options.rebalance - Whether to rebalance allocation annually. Defaults to false.
   @returns {SimulationReturn} result - Result of the sim.
 */
 function simulate(options){
@@ -184,7 +202,8 @@ function simulate(options){
       durationYears: options.durationYears,
       allocation: options.allocation,
       fees: options.fees,
-      spendingModel: options.spendingModel
+      spendingModel: options.spendingModel,
+      rebalance: options.rebalance
     };
     var singleResult = singleSim(singleOptions);
     if (singleResult.netWorths[singleResult.netWorths.length-1] > 1){
