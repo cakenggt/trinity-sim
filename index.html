@@ -8,9 +8,20 @@
     <script src="bundle.js" charset="utf-8"></script>
   </head>
   <body>
+    Starting Value <input type="number" id="startingValue" value="1000000"><br>
+    Duration Years <input type="number" id="durationYears" value="50"><br>
+    Allocation Bonds <input type="range" id="allocation" defaultValue="1" min="0" max="1" step="0.01"> Equities <span id="allocationValue">0.5</span><br>
+    Fees <input type="number" id="fees" value="0.0005"><br>
+    Yearly Spending <input type="number" id="spending" value="40000"><br>
+    Rebalance Allocation Yearly
+    <select id="rebalance">
+      <option value="1">Yes</option>
+      <option value="0">No</option>
+    </select><br>
     <button type="button" id="run">Run</button>
     <div id="data" style="display:none">
       <hr>
+      Success Rate: <span id="successRate"></span><br>
       Net <br>
       <canvas id="netChart" width="1200" height="600"></canvas><br>
       Equity <br>
