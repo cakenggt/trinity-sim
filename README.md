@@ -36,7 +36,8 @@ Runs a single simulation line.
 **options.rebalance**: `Boolean`, Whether to rebalance allocation annually. Defaults to false.
 
 **Returns**: `SingleSimReturn`, result - Result of the sim.
-  **result.netWorths**: `Array.<Number>`, Array representing the net worths in the simulation for each year.
+  **result.data**: `Array.<Object>`, Array of objects containing adjustedNet,
+  adjustedSharesBalance, and adjustedBondsBalance properties.
 
 
 ### simulate(options)
@@ -67,8 +68,8 @@ Runs the entire simulation with multiple simulation lines starting in different 
 
 **Returns**: `SimulationReturn`, result - Result of the sim.
   **result.successRate**: `Number`, Number between 0 and 1 representing the proportion of cycles which succeeded.
-  **result.data**: `Array.<Array.<Number>>`, Array of arrays, each one containing
-  the net worths from a single simulation of one year.
+  **result.data**: `Array.<Array.<Object>>`, Array of arrays of objects, each one containing
+  adjustedNet, adjustedSharesBalance, and adjustedBondsBalance properties.
 
 
 

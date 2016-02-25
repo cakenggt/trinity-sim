@@ -41,12 +41,12 @@ describe('Trinity', function(){
     });
     it('result end balance between normal values', function(){
       var result = trinity.singleSim(options);
-      expect(result.netWorths[result.netWorths.length-1]).to.be.above(1000000).and.below(1000000000);
+      expect(result.data[result.data.length-1].adjustedNet).to.be.above(1000000).and.below(1000000000);
     });
     it('failing result because of too high spending', function(){
       options.spendingModel = 100000;
       var result = trinity.singleSim(options);
-      expect(result.netWorths[result.netWorths.length-1]).to.be.below(0);
+      expect(result.data[result.data.length-1].adjustedNet).to.be.below(0);
     });
   });
   describe('full sim', function(){

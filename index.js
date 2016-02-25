@@ -1,14 +1,16 @@
 /**
   @typedef SingleSimReturn
   @type Object
-  @property {Array.<Number>} netWorths - Array of net worths in the simulation for each year.
+  @property {Array.<Object>} data - Array of objects containing adjustedNet,
+  adjustedSharesBalance, and adjustedBondsBalance properties.
 */
 
 /**
   @typedef SimulationReturn
   @type Object
   @property {Number} successRate - Success rate.
-  @property {Array.<Array.<Number>>} data - Array of array of net worths for each single simulation.
+  @property {Array.<Array.<Object>>} data - Array of array of objects containing adjustedNet,
+  adjustedSharesBalance, and adjustedBondsBalance properties.
 */
 
 //Months are 0 indexed
@@ -82,9 +84,10 @@ function singleSim(options){
   }
 
   var result = {};
-  result.netWorths = [];
+  result.data = [];
+  var nowYear = 2016;
   //starting net worth is in the starting year's dollars
-  var startingNetWorth = inflationAdjuster(startingValue, 2016, startingYear);
+  var startingNetWorth = inflationAdjuster(startingValue, nowYear, startingYear);
   //actual number of shares that the starting value in the
   //starting year would have bought, inflation adjusted
   var shares = (startingNetWorth*allocation.equities)/archive[''+startingYear].sp500;
@@ -106,11 +109,11 @@ function singleSim(options){
     var spending;
     if (typeof(spendingModel) == 'object'){
       //spending array
-      spending = inflationAdjuster(spendingModel[year], 2016, year+startingYear);
+      spending = inflationAdjuster(spendingModel[year], nowYear, year+startingYear);
     }
     else{
       //flat spending
-      spending = inflationAdjuster(spendingModel, 2016, year+startingYear);
+      spending = inflationAdjuster(spendingModel, nowYear, year+startingYear);
     }
     //subtract inflation adjusted spending from each asset type equally
     var valueOfShares = shares*currentYearData.sp500;
@@ -129,8 +132,13 @@ function singleSim(options){
       }
     }
     //adjusted net is in current year dollars
-    var adjustedNet = worthAdjuster(net, year+startingYear, 2016);
-    result.netWorths.push(adjustedNet);
+    var adjustedNet = worthAdjuster(net, year+startingYear, nowYear);
+    var runData = {
+      adjustedNet: adjustedNet,
+      adjustedSharesBalance: worthAdjuster(shares*currentYearData.sp500, year+startingYear, nowYear),
+      adjustedBondsBalance: worthAdjuster(bonds, year+startingYear, nowYear),
+    };
+    result.data.push(runData);
   }
   return result;
 }
@@ -206,7 +214,7 @@ function simulate(options){
       rebalance: options.rebalance
     };
     var singleResult = singleSim(singleOptions);
-    if (singleResult.netWorths[singleResult.netWorths.length-1] > 1){
+    if (singleResult.data[singleResult.data.length-1].adjustedNet > 1){
       totalSuccess++;
     }
     totalRuns++;
