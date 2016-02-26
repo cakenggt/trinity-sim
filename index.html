@@ -4,8 +4,14 @@
     <meta charset="utf-8">
     <title></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="Chart.min.js"></script>
+    <script src="flotr2.min.js"></script>
     <script src="bundle.js" charset="utf-8"></script>
+    <style media="screen">
+      .chart {
+        width: 1200px;
+        height: 600px;
+      }
+    </style>
   </head>
   <body>
     Starting Value <input type="number" id="startingValue" value="1000000"><br>
@@ -23,11 +29,11 @@
       <hr>
       Success Rate: <span id="successRate"></span><br>
       Net <br>
-      <canvas id="netChart" width="1200" height="600"></canvas><br>
+      <div id="netChart" class="chart"></div><br>
       Equity <br>
-      <canvas id="equityChart" width="1200" height="600"></canvas><br>
+      <div id="equityChart" class="chart"></div><br>
       Bonds <br>
-      <canvas id="bondChart" width="1200" height="600"></canvas><br>
+      <div id="bondChart" class="chart"></div><br>
     </div>
   </body>
 </html>
