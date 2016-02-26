@@ -1,6 +1,6 @@
 {
   "name": "trinity-sim",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Simulator for the famous Trinity study",
   "main": "index.js",
   "directories": {
